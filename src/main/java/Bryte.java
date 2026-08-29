@@ -27,7 +27,7 @@ public class Bryte {
                     }
                     System.out.println("____________________________________________________________");
                     break;
-                case "exit":
+                case "bye":
                     running = false;
                     break;
                 default:
