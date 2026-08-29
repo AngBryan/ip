@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Bryte {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        String[] list = new String[100];
+        Task[] taskList = new Task[100];
         String banner = "██████╗ ██████╗ ██╗   ██╗████████╗███████╗\n"
               + "██╔══██╗██╔══██╗╚██╗ ██╔╝╚══██╔══╝██╔════╝\n"
               + "██████╔╝██████╔╝ ╚████╔╝    ██║   █████╗  \n"
@@ -22,19 +22,22 @@ public class Bryte {
             switch(command.toLowerCase()){
                 case "list":
                     System.out.println("____________________________________________________________");
+                    System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < listCounter; i++){
-                        System.out.println(i + ". " + list[i]);
+                        System.out.println(i + ".["+ taskList[i].getStatusIcon() + "] " + taskList[i].getName());
                     }
                     System.out.println("____________________________________________________________");
                     break;
+                    
                 case "bye":
                     running = false;
                     break;
                 default:
-                    list[listCounter] = command;
+                    Task newTask = new Task(command, false);
+                    taskList[listCounter] = newTask;
                     listCounter++;
                     System.out.println("____________________________________________________________");
-                    System.out.println("Added: " + command);
+                    System.out.println("Added: " + newTask.getName());
                     System.out.println("____________________________________________________________");
 
             }
