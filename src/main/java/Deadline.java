@@ -3,17 +3,17 @@
  */
 public class Deadline extends Task {
 
-    protected String by;
+    protected String dueDate;
 
     /**
      * Constructs a new {@code Deadline} task with the specified description and deadline.
      *
      * @param description The description or name of the task.
-     * @param by The date/time the task needs to be done by.
+     * @param dueDate The date/time the task needs to be done by.
      */
-    public Deadline(String description, String by) {
+    public Deadline(String description, String dueDate) {
         super(description, false);
-        this.by = by;
+        this.dueDate = dueDate;
     }
 
     /**
@@ -23,6 +23,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[D]" + super.toString() + " (by: " + dueDate + ")";
     }
 }
