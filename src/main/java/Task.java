@@ -61,4 +61,14 @@ public class Task {
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
     }
+
+    /**
+     * Returns the string representation of the task.
+     *
+     * @return The string representation.
+     */
+    @Override
+    public String toString() {
+        return "[" + getStatusIcon() + "] " + name;
+    }
 }
