@@ -147,7 +147,7 @@ public class Bryte {
         taskList[taskCount] = newTask;
         taskCount++;
         System.out.println(DIVIDER);
-        System.out.println(" Added: " + newTask.getName());
+        System.out.println(" Added: " + newTask.getDescription());
         System.out.println(DIVIDER);
     }
 

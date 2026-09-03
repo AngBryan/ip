@@ -1,38 +1,38 @@
 /**
  * Represents a task in the Bryte task management application.
- * A task has a name and a status indicating whether it has been completed.
+ * A task has a description and a status indicating whether it has been completed.
  */
 public class Task {
-    private String name;
+    private String description;
     private boolean isDone;
 
     /**
-     * Constructs a new {@code Task} with the specified name and completion status.
+     * Constructs a new {@code Task} with the specified description and completion status.
      *
-     * @param name The description or name of the task.
+     * @param description The description of the task.
      * @param isDone The initial completion status of the task.
      */
-    public Task(String name, boolean isDone) {
-        this.name = name;
+    public Task(String description, boolean isDone) {
+        this.description = description;
         this.isDone = isDone;
     }
 
     /**
-     * Returns the name of the task.
+     * Returns the description of the task.
      *
-     * @return The task name.
+     * @return The task description.
      */
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Sets the name of the task.
+     * Sets the description of the task.
      *
-     * @param name The new name for the task.
+     * @param description The new description for the task.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -69,6 +69,6 @@ public class Task {
      */
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + name;
+        return "[" + getStatusIcon() + "] " + description;
     }
 }
