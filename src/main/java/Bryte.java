@@ -16,6 +16,10 @@ public class Bryte {
     private static Task[] taskList = new Task[MAX_TASKS];
     private static int taskCount = 0;
 
+    private static final String DEADLINE_DELIMITER = " /by ";
+    private static final String EVENT_START_DELIMITER = " /from ";
+    private static final String EVENT_END_DELIMITER = " /to ";
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean isRunning = true;
@@ -101,10 +105,10 @@ public class Bryte {
             System.out.println(DIVIDER);
             return;
         }
-        String[] deadlineParts = commandParts[1].split(" /by ");
+        String[] deadlineParts = commandParts[1].split(DEADLINE_DELIMITER);
         if (deadlineParts.length < 2) {
             System.out.println(DIVIDER);
-            System.out.println(" Please use /by to specify the deadline.");
+            System.out.println(" Please use " + DEADLINE_DELIMITER.trim() + " to specify the deadline.");
             System.out.println(DIVIDER);
             return;
         }
@@ -119,17 +123,17 @@ public class Bryte {
             System.out.println(DIVIDER);
             return;
         }
-        String[] eventParts = commandParts[1].split(" /from ");
+        String[] eventParts = commandParts[1].split(EVENT_START_DELIMITER);
         if (eventParts.length < 2) {
             System.out.println(DIVIDER);
-            System.out.println(" Please use /from and /to to specify the event duration.");
+            System.out.println(" Please use " + EVENT_START_DELIMITER.trim() + " and " + EVENT_END_DELIMITER.trim() + " to specify the event duration.");
             System.out.println(DIVIDER);
             return;
         }
-        String[] timeParts = eventParts[1].split(" /to ");
+        String[] timeParts = eventParts[1].split(EVENT_END_DELIMITER);
         if (timeParts.length < 2) {
             System.out.println(DIVIDER);
-            System.out.println(" Please use /to to specify the end time of the event.");
+            System.out.println(" Please use " + EVENT_END_DELIMITER.trim() + " to specify the end time of the event.");
             System.out.println(DIVIDER);
             return;
         }
