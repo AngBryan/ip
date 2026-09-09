@@ -29,46 +29,55 @@ public class Bryte {
         System.out.println("What can I do for you?");
 
         while (isRunning) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
+            if (command.isEmpty()) {
+                continue;
+            }
             String[] commandParts = command.split(" ", 2);
             String keyword = commandParts[0].toLowerCase();
 
-            switch (keyword) {
-            case "list":
-                handleListCommand();
-                break;
+            try {
+                switch (keyword) {
+                case "list":
+                    handleListCommand();
+                    break;
 
-            case "mark":
+                case "mark":
+                    System.out.println(DIVIDER);
+                    setMark(true, commandParts);
+                    System.out.println(DIVIDER);
+                    break;
+
+                case "unmark":
+                    System.out.println(DIVIDER);
+                    setMark(false, commandParts);
+                    System.out.println(DIVIDER);
+                    break;
+
+                case "todo":
+                    handleAddTodoCommand(commandParts);
+                    break;
+
+                case "deadline":
+                    handleAddDeadlineCommand(commandParts);
+                    break;
+
+                case "event":
+                    handleAddEventCommand(commandParts);
+                    break;
+
+                case "bye":
+                    isRunning = false;
+                    break;
+
+                default:
+                    handleDefaultCommand(command);
+                    break;
+                }
+            } catch (BryteException e) {
                 System.out.println(DIVIDER);
-                setMark(true, commandParts);
+                System.out.println(" OOPS!!! " + e.getMessage());
                 System.out.println(DIVIDER);
-                break;
-
-            case "unmark":
-                System.out.println(DIVIDER);
-                setMark(false, commandParts);
-                System.out.println(DIVIDER);
-                break;
-
-            case "todo":
-                handleAddTodoCommand(commandParts);
-                break;
-
-            case "deadline":
-                handleAddDeadlineCommand(commandParts);
-                break;
-
-            case "event":
-                handleAddEventCommand(commandParts);
-                break;
-
-            case "bye":
-                isRunning = false;
-                break;
-
-            default:
-                handleDefaultCommand(command);
-                break;
             }
         }
 
@@ -87,68 +96,44 @@ public class Bryte {
         System.out.println(DIVIDER);
     }
 
-    private static void handleAddTodoCommand(String[] commandParts) {
-        if (commandParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please provide a description for the todo.");
-            System.out.println(DIVIDER);
-            return;
+    private static void handleAddTodoCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("The description of a todo cannot be empty.");
         }
-        Todo newTodo = new Todo(commandParts[1]);
+        Todo newTodo = new Todo(commandParts[1].trim());
         addTask(newTodo);
     }
 
-    private static void handleAddDeadlineCommand(String[] commandParts) {
-        if (commandParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please provide a description and deadline.");
-            System.out.println(DIVIDER);
-            return;
+    private static void handleAddDeadlineCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("The description of a deadline cannot be empty.");
         }
         String[] deadlineParts = commandParts[1].split(DEADLINE_DELIMITER);
         if (deadlineParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please use " + DEADLINE_DELIMITER.trim() + " to specify the deadline.");
-            System.out.println(DIVIDER);
-            return;
+            throw new BryteException("Please use " + DEADLINE_DELIMITER.trim() + " to specify the deadline.");
         }
-        Deadline newDeadline = new Deadline(deadlineParts[0], deadlineParts[1]);
+        Deadline newDeadline = new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim());
         addTask(newDeadline);
     }
 
-    private static void handleAddEventCommand(String[] commandParts) {
-        if (commandParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please provide a description and duration for the event.");
-            System.out.println(DIVIDER);
-            return;
+    private static void handleAddEventCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("The description of an event cannot be empty.");
         }
         String[] eventParts = commandParts[1].split(EVENT_START_DELIMITER);
         if (eventParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please use " + EVENT_START_DELIMITER.trim() + " and " + EVENT_END_DELIMITER.trim() + " to specify the event duration.");
-            System.out.println(DIVIDER);
-            return;
+            throw new BryteException("Please use " + EVENT_START_DELIMITER.trim() + " and " + EVENT_END_DELIMITER.trim() + " to specify the event duration.");
         }
         String[] timeParts = eventParts[1].split(EVENT_END_DELIMITER);
         if (timeParts.length < 2) {
-            System.out.println(DIVIDER);
-            System.out.println(" Please use " + EVENT_END_DELIMITER.trim() + " to specify the end time of the event.");
-            System.out.println(DIVIDER);
-            return;
+            throw new BryteException("Please use " + EVENT_END_DELIMITER.trim() + " to specify the end time of the event.");
         }
-        Event newEvent = new Event(eventParts[0], timeParts[0], timeParts[1]);
+        Event newEvent = new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim());
         addTask(newEvent);
     }
 
-    private static void handleDefaultCommand(String command) {
-        // Keep creating generic Tasks for backward compatibility or if no keyword matches
-        Task newTask = new Task(command, false);
-        taskList[taskCount] = newTask;
-        taskCount++;
-        System.out.println(DIVIDER);
-        System.out.println(" Added: " + newTask.getDescription());
-        System.out.println(DIVIDER);
+    private static void handleDefaultCommand(String command) throws BryteException {
+        throw new BryteException("I'm sorry, but I don't know what that means :-(");
     }
 
     /**
@@ -157,28 +142,27 @@ public class Bryte {
      * @param markStatus The status to set: {@code true} for marked as done, {@code false} for undone.
      * @param commandParts The array of string tokens from the user input.
      */
-    private static void setMark(boolean markStatus, String[] commandParts) {
-        if (commandParts.length < 2) {
-            System.out.println(" Please specify a task number.");
-            return;
+    private static void setMark(boolean markStatus, String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("Please specify a task number.");
         }
 
         try {
-            int index = Integer.parseInt(commandParts[1]) - 1;
+            int index = Integer.parseInt(commandParts[1].trim()) - 1;
 
-            if (index >= 0 && index < taskCount && taskList[index] != null) {
-                if (markStatus) {
-                    System.out.println(" Nice! I've marked this task as done:");
-                } else {
-                    System.out.println(" OK, I've marked this task as not done yet:");
-                }
-                taskList[index].setDone(markStatus);
-                System.out.println("   " + taskList[index].toString());
-            } else {
-                System.out.println(" Invalid task number.");
+            if (index < 0 || index >= taskCount || taskList[index] == null) {
+                throw new BryteException("Invalid task number.");
             }
+
+            if (markStatus) {
+                System.out.println(" Nice! I've marked this task as done:");
+            } else {
+                System.out.println(" OK, I've marked this task as not done yet:");
+            }
+            taskList[index].setDone(markStatus);
+            System.out.println("   " + taskList[index].toString());
         } catch (NumberFormatException e) {
-            System.out.println(" Task number must be an integer.");
+            throw new BryteException("Task number must be an integer.");
         }
     }
 
@@ -186,13 +170,11 @@ public class Bryte {
      * Adds a task to the task list and prints the confirmation message.
      *
      * @param task The task to be added.
+     * @throws BryteException If the task list is full.
      */
-    private static void addTask(Task task) {
+    private static void addTask(Task task) throws BryteException {
         if (taskCount >= MAX_TASKS) {
-            System.out.println(DIVIDER);
-            System.out.println(" Task list is full. Cannot add more tasks.");
-            System.out.println(DIVIDER);
-            return;
+            throw new BryteException("Task list is full. Cannot add more tasks.");
         }
         taskList[taskCount] = task;
         taskCount++;
