@@ -1,3 +1,5 @@
+package bryte.task;
+
 /**
  * Represents a task without any date/time attached to it.
  */
