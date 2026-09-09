@@ -1,4 +1,12 @@
+package bryte;
+
 import java.util.Scanner;
+
+import bryte.exception.BryteException;
+import bryte.task.Deadline;
+import bryte.task.Event;
+import bryte.task.Task;
+import bryte.task.Todo;
 
 /**
  * Main entry point for the Bryte task management application.
