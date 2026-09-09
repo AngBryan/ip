@@ -1,3 +1,5 @@
+package bryte.task;
+
 /**
  * Represents a task in the Bryte task management application.
  * A task has a description and a status indicating whether it has been completed.
