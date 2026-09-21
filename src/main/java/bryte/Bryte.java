@@ -126,6 +126,7 @@ public class Bryte {
             while (fileScanner.hasNext()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(" \\| ");
+                if (parts.length < 3) continue;
 
                 String type = parts[0];
                 boolean isDone = parts[1].equals("1");
@@ -137,11 +138,17 @@ public class Bryte {
                     task = new Todo(description);
                     break;
                 case "D":
-                    task = new Deadline(description, parts[3]);
+                    if (parts.length >= 4) {
+                        task = new Deadline(description, parts[3]);
+                    }
                     break;
                 case "E":
-                    task = new Event(description, parts[3], parts[4]);
+                    if (parts.length >= 5) {
+                        task = new Event(description, parts[3], parts[4]);
+                    }
                     break;
+                default:
+                    continue; // Unknown task type
                 }
 
                 if (task != null && taskCount < MAX_TASKS) {
@@ -153,6 +160,11 @@ public class Bryte {
             fileScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Data file not found: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Data file is corrupted. Starting with an empty task list.");
+            taskCount = 0;
+            // Optionally, we could clear the list completely:
+            // for(int i = 0; i < MAX_TASKS; i++) taskList[i] = null;
         }
     }
 
