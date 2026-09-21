@@ -27,6 +27,11 @@ public class Bryte {
     private static final String EVENT_START_DELIMITER = " /from ";
     private static final String EVENT_END_DELIMITER = " /to ";
 
+    /**
+     * Main method to start the Bryte application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean isRunning = true;
@@ -98,6 +103,10 @@ public class Bryte {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Handles the execution of the list command.
+     * Prints all the tasks currently in the task list.
+     */
     private static void handleListCommand() {
         System.out.println(DIVIDER);
         System.out.println(" Here are the tasks in your list:");
@@ -107,6 +116,13 @@ public class Bryte {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Handles the execution of the todo command.
+     * Creates a new Todo task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description of the todo is empty.
+     */
     private static void handleAddTodoCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a todo cannot be empty.");
@@ -115,6 +131,13 @@ public class Bryte {
         addTask(newTodo);
     }
 
+    /**
+     * Handles the execution of the deadline command.
+     * Creates a new Deadline task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description or deadline time is missing or incorrectly formatted.
+     */
     private static void handleAddDeadlineCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a deadline cannot be empty.");
@@ -127,6 +150,13 @@ public class Bryte {
         addTask(newDeadline);
     }
 
+    /**
+     * Handles the execution of the event command.
+     * Creates a new Event task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description, start time, or end time is missing or incorrectly formatted.
+     */
     private static void handleAddEventCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of an event cannot be empty.");
@@ -143,6 +173,13 @@ public class Bryte {
         addTask(newEvent);
     }
 
+    /**
+     * Handles unknown commands.
+     * Throws a BryteException indicating the command is not understood.
+     *
+     * @param command The full user input string.
+     * @throws BryteException Always thrown for default commands.
+     */
     private static void handleDefaultCommand(String command) throws BryteException {
         throw new BryteException("I'm sorry, but I don't know what that means :-(");
     }
