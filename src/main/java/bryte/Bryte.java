@@ -1,5 +1,6 @@
 package bryte;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import bryte.exception.BryteException;
@@ -20,9 +21,7 @@ public class Bryte {
             + "██████╔╝██║  ██║   ██║      ██║   ███████╗\n"
             + "╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝\n";
     private static final String DIVIDER = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
-    private static Task[] taskList = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private static ArrayList<Task> taskList = new ArrayList<>();
 
     private static final String DEADLINE_DELIMITER = " /by ";
     private static final String EVENT_START_DELIMITER = " /from ";
@@ -98,8 +97,8 @@ public class Bryte {
     private static void handleListCommand() {
         System.out.println(DIVIDER);
         System.out.println(" Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + "." + taskList[i].toString());
+        for (int i = 0; i < taskList.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + taskList.get(i).toString());
         }
         System.out.println(DIVIDER);
     }
@@ -158,7 +157,7 @@ public class Bryte {
         try {
             int index = Integer.parseInt(commandParts[1].trim()) - 1;
 
-            if (index < 0 || index >= taskCount || taskList[index] == null) {
+            if (index < 0 || index >= taskList.size()) {
                 throw new BryteException("Invalid task number.");
             }
 
@@ -167,8 +166,8 @@ public class Bryte {
             } else {
                 System.out.println(" OK, I've marked this task as not done yet:");
             }
-            taskList[index].setDone(markStatus);
-            System.out.println("   " + taskList[index].toString());
+            taskList.get(index).setDone(markStatus);
+            System.out.println("   " + taskList.get(index).toString());
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
         }
@@ -178,18 +177,13 @@ public class Bryte {
      * Adds a task to the task list and prints the confirmation message.
      *
      * @param task The task to be added.
-     * @throws BryteException If the task list is full.
      */
-    private static void addTask(Task task) throws BryteException {
-        if (taskCount >= MAX_TASKS) {
-            throw new BryteException("Task list is full. Cannot add more tasks.");
-        }
-        taskList[taskCount] = task;
-        taskCount++;
+    private static void addTask(Task task) {
+        taskList.add(task);
         System.out.println(DIVIDER);
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + task.toString());
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println(" Now you have " + taskList.size() + " tasks in the list.");
         System.out.println(DIVIDER);
     }
 }
