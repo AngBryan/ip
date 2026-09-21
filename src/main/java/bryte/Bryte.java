@@ -45,7 +45,7 @@ public class Bryte {
         System.out.println(BANNER);
         System.out.println("Hello! I'm BRYTE.");
         System.out.println("What can I do for you?");
-        
+
         loadTasksFromFile();
 
         while (isRunning) {
@@ -58,45 +58,45 @@ public class Bryte {
 
             try {
                 switch (keyword) {
-                case "list":
-                    handleListCommand();
-                    break;
+                    case "list":
+                        handleListCommand();
+                        break;
 
-                case "mark":
-                    System.out.println(DIVIDER);
-                    setMark(true, commandParts);
-                    System.out.println(DIVIDER);
-                    break;
+                    case "mark":
+                        System.out.println(DIVIDER);
+                        setMark(true, commandParts);
+                        System.out.println(DIVIDER);
+                        break;
 
-                case "unmark":
-                    System.out.println(DIVIDER);
-                    setMark(false, commandParts);
-                    System.out.println(DIVIDER);
-                    break;
+                    case "unmark":
+                        System.out.println(DIVIDER);
+                        setMark(false, commandParts);
+                        System.out.println(DIVIDER);
+                        break;
 
-                case "todo":
-                    handleAddTodoCommand(commandParts);
-                    break;
+                    case "todo":
+                        handleAddTodoCommand(commandParts);
+                        break;
 
-                case "deadline":
-                    handleAddDeadlineCommand(commandParts);
-                    break;
+                    case "deadline":
+                        handleAddDeadlineCommand(commandParts);
+                        break;
 
-                case "event":
-                    handleAddEventCommand(commandParts);
-                    break;
+                    case "event":
+                        handleAddEventCommand(commandParts);
+                        break;
 
-                case "delete":
-                    handleDeleteCommand(commandParts);
-                    break;
+                    case "delete":
+                        handleDeleteCommand(commandParts);
+                        break;
 
-                case "bye":
-                    isRunning = false;
-                    break;
+                    case "bye":
+                        isRunning = false;
+                        break;
 
-                default:
-                    handleDefaultCommand(command);
-                    break;
+                    default:
+                        handleDefaultCommand(command);
+                        break;
                 }
             } catch (BryteException e) {
                 System.out.println(DIVIDER);
@@ -138,7 +138,9 @@ public class Bryte {
             while (fileScanner.hasNext()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(" \\| ");
-                if (parts.length < 3) continue;
+                if (parts.length < 3) {
+                    continue;
+                }
 
                 String type = parts[0];
                 boolean isDone = parts[1].equals("1");
@@ -146,21 +148,21 @@ public class Bryte {
 
                 Task task = null;
                 switch (type) {
-                case "T":
-                    task = new Todo(description);
-                    break;
-                case "D":
-                    if (parts.length >= 4) {
-                        task = new Deadline(description, parts[3]);
-                    }
-                    break;
-                case "E":
-                    if (parts.length >= 5) {
-                        task = new Event(description, parts[3], parts[4]);
-                    }
-                    break;
-                default:
-                    continue; // Unknown task type
+                    case "T":
+                        task = new Todo(description);
+                        break;
+                    case "D":
+                        if (parts.length >= 4) {
+                            task = new Deadline(description, parts[3]);
+                        }
+                        break;
+                    case "E":
+                        if (parts.length >= 5) {
+                            task = new Event(description, parts[3], parts[4]);
+                        }
+                        break;
+                    default:
+                        continue; // Unknown task type
                 }
 
                 if (task != null) {
@@ -244,11 +246,13 @@ public class Bryte {
         }
         String[] eventParts = commandParts[1].split(EVENT_START_DELIMITER);
         if (eventParts.length < 2) {
-            throw new BryteException("Please use " + EVENT_START_DELIMITER.trim() + " and " + EVENT_END_DELIMITER.trim() + " to specify the event duration.");
+            throw new BryteException("Please use " + EVENT_START_DELIMITER.trim()
+                    + " and " + EVENT_END_DELIMITER.trim() + " to specify the event duration.");
         }
         String[] timeParts = eventParts[1].split(EVENT_END_DELIMITER);
         if (timeParts.length < 2) {
-            throw new BryteException("Please use " + EVENT_END_DELIMITER.trim() + " to specify the end time of the event.");
+            throw new BryteException("Please use " + EVENT_END_DELIMITER.trim()
+                    + " to specify the end time of the event.");
         }
         Event newEvent = new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim());
         addTask(newEvent);
