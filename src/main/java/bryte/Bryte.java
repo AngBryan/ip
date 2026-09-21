@@ -73,6 +73,10 @@ public class Bryte {
                     handleAddEventCommand(commandParts);
                     break;
 
+                case "delete":
+                    handleDeleteCommand(commandParts);
+                    break;
+
                 case "bye":
                     isRunning = false;
                     break;
@@ -141,6 +145,35 @@ public class Bryte {
 
     private static void handleDefaultCommand(String command) throws BryteException {
         throw new BryteException("I'm sorry, but I don't know what that means :-(");
+    }
+
+    /**
+     * Handles the deletion of a task from the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the task number is invalid or missing.
+     */
+    private static void handleDeleteCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("Please specify a task number to delete.");
+        }
+
+        try {
+            int index = Integer.parseInt(commandParts[1].trim()) - 1;
+
+            if (index < 0 || index >= taskList.size()) {
+                throw new BryteException("Invalid task number.");
+            }
+
+            Task removedTask = taskList.remove(index);
+            System.out.println(DIVIDER);
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + removedTask.toString());
+            System.out.println(" Now you have " + taskList.size() + " tasks in the list.");
+            System.out.println(DIVIDER);
+        } catch (NumberFormatException e) {
+            throw new BryteException("Task number must be an integer.");
+        }
     }
 
     /**
