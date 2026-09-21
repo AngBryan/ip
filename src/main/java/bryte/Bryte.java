@@ -1,5 +1,6 @@
 package bryte;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import bryte.exception.BryteException;
@@ -20,14 +21,17 @@ public class Bryte {
             + "██████╔╝██║  ██║   ██║      ██║   ███████╗\n"
             + "╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝\n";
     private static final String DIVIDER = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
-    private static Task[] taskList = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private static ArrayList<Task> taskList = new ArrayList<>();
 
     private static final String DEADLINE_DELIMITER = " /by ";
     private static final String EVENT_START_DELIMITER = " /from ";
     private static final String EVENT_END_DELIMITER = " /to ";
 
+    /**
+     * Main method to start the Bryte application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean isRunning = true;
@@ -74,6 +78,10 @@ public class Bryte {
                     handleAddEventCommand(commandParts);
                     break;
 
+                case "delete":
+                    handleDeleteCommand(commandParts);
+                    break;
+
                 case "bye":
                     isRunning = false;
                     break;
@@ -95,15 +103,26 @@ public class Bryte {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Handles the execution of the list command.
+     * Prints all the tasks currently in the task list.
+     */
     private static void handleListCommand() {
         System.out.println(DIVIDER);
         System.out.println(" Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + "." + taskList[i].toString());
+        for (int i = 0; i < taskList.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + taskList.get(i).toString());
         }
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Handles the execution of the todo command.
+     * Creates a new Todo task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description of the todo is empty.
+     */
     private static void handleAddTodoCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a todo cannot be empty.");
@@ -112,6 +131,13 @@ public class Bryte {
         addTask(newTodo);
     }
 
+    /**
+     * Handles the execution of the deadline command.
+     * Creates a new Deadline task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description or deadline time is missing or incorrectly formatted.
+     */
     private static void handleAddDeadlineCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a deadline cannot be empty.");
@@ -124,6 +150,13 @@ public class Bryte {
         addTask(newDeadline);
     }
 
+    /**
+     * Handles the execution of the event command.
+     * Creates a new Event task and adds it to the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the description, start time, or end time is missing or incorrectly formatted.
+     */
     private static void handleAddEventCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of an event cannot be empty.");
@@ -140,8 +173,44 @@ public class Bryte {
         addTask(newEvent);
     }
 
+    /**
+     * Handles unknown commands.
+     * Throws a BryteException indicating the command is not understood.
+     *
+     * @param command The full user input string.
+     * @throws BryteException Always thrown for default commands.
+     */
     private static void handleDefaultCommand(String command) throws BryteException {
         throw new BryteException("I'm sorry, but I don't know what that means :-(");
+    }
+
+    /**
+     * Handles the deletion of a task from the list.
+     *
+     * @param commandParts The array of string tokens from the user input.
+     * @throws BryteException If the task number is invalid or missing.
+     */
+    private static void handleDeleteCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("Please specify a task number to delete.");
+        }
+
+        try {
+            int index = Integer.parseInt(commandParts[1].trim()) - 1;
+
+            if (index < 0 || index >= taskList.size()) {
+                throw new BryteException("Invalid task number.");
+            }
+
+            Task removedTask = taskList.remove(index);
+            System.out.println(DIVIDER);
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + removedTask.toString());
+            System.out.println(" Now you have " + taskList.size() + " tasks in the list.");
+            System.out.println(DIVIDER);
+        } catch (NumberFormatException e) {
+            throw new BryteException("Task number must be an integer.");
+        }
     }
 
     /**
@@ -158,7 +227,7 @@ public class Bryte {
         try {
             int index = Integer.parseInt(commandParts[1].trim()) - 1;
 
-            if (index < 0 || index >= taskCount || taskList[index] == null) {
+            if (index < 0 || index >= taskList.size()) {
                 throw new BryteException("Invalid task number.");
             }
 
@@ -167,8 +236,8 @@ public class Bryte {
             } else {
                 System.out.println(" OK, I've marked this task as not done yet:");
             }
-            taskList[index].setDone(markStatus);
-            System.out.println("   " + taskList[index].toString());
+            taskList.get(index).setDone(markStatus);
+            System.out.println("   " + taskList.get(index).toString());
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
         }
@@ -178,18 +247,13 @@ public class Bryte {
      * Adds a task to the task list and prints the confirmation message.
      *
      * @param task The task to be added.
-     * @throws BryteException If the task list is full.
      */
-    private static void addTask(Task task) throws BryteException {
-        if (taskCount >= MAX_TASKS) {
-            throw new BryteException("Task list is full. Cannot add more tasks.");
-        }
-        taskList[taskCount] = task;
-        taskCount++;
+    private static void addTask(Task task) {
+        taskList.add(task);
         System.out.println(DIVIDER);
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + task.toString());
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println(" Now you have " + taskList.size() + " tasks in the list.");
         System.out.println(DIVIDER);
     }
 }
