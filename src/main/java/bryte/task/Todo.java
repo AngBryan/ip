@@ -23,5 +23,15 @@ public class Todo extends Task {
     public String toString() {
         return "[T]" + super.toString();
     }
+
+    /**
+     * Returns the string representation of the Todo task for file storage.
+     *
+     * @return The formatted string for saving to a file.
+     */
+    @Override
+    public String toFileFormat() {
+        return "T | " + super.toFileFormat();
+    }
 }
 

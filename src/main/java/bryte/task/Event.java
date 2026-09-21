@@ -30,5 +30,15 @@ public class Event extends Task {
     public String toString() {
         return "[E]" + super.toString() + " (from: " + startTime + " to: " + endTime + ")";
     }
+
+    /**
+     * Returns the string representation of the Event task for file storage.
+     *
+     * @return The formatted string for saving to a file.
+     */
+    @Override
+    public String toFileFormat() {
+        return "E | " + super.toFileFormat() + " | " + startTime + " | " + endTime;
+    }
 }
 
