@@ -1,5 +1,9 @@
 package bryte;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 import bryte.exception.BryteException;
@@ -20,6 +24,8 @@ public class Bryte {
             + "██████╔╝██║  ██║   ██║      ██║   ███████╗\n"
             + "╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝\n";
     private static final String DIVIDER = "____________________________________________________________";
+    private static final String DATA_DIR = "data";
+    private static final String FILE_NAME = "bryte.txt";
     private static final int MAX_TASKS = 100;
     private static Task[] taskList = new Task[MAX_TASKS];
     private static int taskCount = 0;
@@ -35,6 +41,8 @@ public class Bryte {
         System.out.println(BANNER);
         System.out.println("Hello! I'm BRYTE.");
         System.out.println("What can I do for you?");
+        
+        loadTasksFromFile();
 
         while (isRunning) {
             String command = scanner.nextLine().trim();
@@ -104,6 +112,70 @@ public class Bryte {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Loads tasks from the hard disk.
+     */
+    private static void loadTasksFromFile() {
+        File file = new File(DATA_DIR, FILE_NAME);
+        if (!file.exists()) {
+            return;
+        }
+
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNext()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(" \\| ");
+
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+
+                Task task = null;
+                switch (type) {
+                case "T":
+                    task = new Todo(description);
+                    break;
+                case "D":
+                    task = new Deadline(description, parts[3]);
+                    break;
+                case "E":
+                    task = new Event(description, parts[3], parts[4]);
+                    break;
+                }
+
+                if (task != null && taskCount < MAX_TASKS) {
+                    task.setDone(isDone);
+                    taskList[taskCount] = task;
+                    taskCount++;
+                }
+            }
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Data file not found: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Saves all tasks to the hard disk.
+     */
+    private static void saveTasksToFile() {
+        try {
+            File dir = new File(DATA_DIR);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(DATA_DIR, FILE_NAME);
+            FileWriter fw = new FileWriter(file);
+            for (int i = 0; i < taskCount; i++) {
+                fw.write(taskList[i].toFileFormat() + System.lineSeparator());
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to file: " + e.getMessage());
+        }
+    }
+
     private static void handleAddTodoCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a todo cannot be empty.");
@@ -168,6 +240,7 @@ public class Bryte {
                 System.out.println(" OK, I've marked this task as not done yet:");
             }
             taskList[index].setDone(markStatus);
+            saveTasksToFile();
             System.out.println("   " + taskList[index].toString());
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
@@ -186,6 +259,7 @@ public class Bryte {
         }
         taskList[taskCount] = task;
         taskCount++;
+        saveTasksToFile();
         System.out.println(DIVIDER);
         System.out.println(" Got it. I've added this task:");
         System.out.println("   " + task.toString());
