@@ -22,3 +22,7 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 #Reduce clutter by not tracking the class files
 /src/main/java/*.class
+
+# User added ignores
+/data/
+
