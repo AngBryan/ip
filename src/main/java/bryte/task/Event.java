@@ -48,4 +48,16 @@ public class Event extends Task {
         return "E | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(startTime)
                 + " | " + DateTimeUtil.formatForStorage(endTime);
     }
+
+    /**
+     * Checks if the event occurs on the specified date.
+     * Checks both the start and end dates.
+     *
+     * @param date The date to check.
+     * @return {@code true} if the event starts or ends on the date, {@code false} otherwise.
+     */
+    @Override
+    public boolean isOnDate(java.time.LocalDate date) {
+        return startTime.toLocalDate().isEqual(date) || endTime.toLocalDate().isEqual(date);
+    }
 }

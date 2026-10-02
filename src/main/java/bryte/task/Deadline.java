@@ -43,4 +43,15 @@ public class Deadline extends Task {
     public String toFileFormat() {
         return "D | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(dueDate);
     }
+
+    /**
+     * Checks if the deadline occurs on the specified date.
+     *
+     * @param date The date to check.
+     * @return {@code true} if the deadline is on the date, {@code false} otherwise.
+     */
+    @Override
+    public boolean isOnDate(java.time.LocalDate date) {
+        return dueDate.toLocalDate().isEqual(date);
+    }
 }

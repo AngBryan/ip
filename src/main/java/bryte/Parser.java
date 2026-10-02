@@ -6,10 +6,12 @@ import bryte.command.DeleteCommand;
 import bryte.command.ExitCommand;
 import bryte.command.ListCommand;
 import bryte.command.MarkCommand;
+import bryte.command.ScheduleCommand;
 import bryte.exception.BryteException;
 import bryte.task.Deadline;
 import bryte.task.Event;
 import bryte.task.Todo;
+import bryte.util.DateTimeUtil;
 
 /**
  * Parses user input into executable commands.
@@ -45,6 +47,8 @@ public class Parser {
                 return prepareEventCommand(commandParts);
             case "delete":
                 return prepareDeleteCommand(commandParts);
+            case "schedule":
+                return prepareScheduleCommand(commandParts);
             case "bye":
                 return new ExitCommand();
             default:
@@ -109,5 +113,13 @@ public class Parser {
                     + " to specify the end time of the event.");
         }
         return new AddCommand(new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim()));
+    }
+
+    private static Command prepareScheduleCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("Please specify a date to check the schedule (e.g., schedule 2019-10-15).");
+        }
+        java.time.LocalDateTime dt = DateTimeUtil.parse(commandParts[1].trim());
+        return new ScheduleCommand(dt.toLocalDate());
     }
 }
