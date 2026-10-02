@@ -23,6 +23,14 @@ public class MarkCommand extends Command {
         this.isDone = isDone;
     }
 
+    /**
+     * Executes the mark or unmark command by updating the task's completion status and saving to storage.
+     *
+     * @param tasks The task list.
+     * @param ui The user interface.
+     * @param storage The storage for saving tasks.
+     * @throws BryteException If the task index is invalid or an error occurs when saving.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BryteException {
         if (index < 0 || index >= tasks.size()) {

@@ -23,6 +23,13 @@ public class ScheduleCommand extends Command {
         this.targetDate = targetDate;
     }
 
+    /**
+     * Executes the schedule command by listing tasks occurring on the target date.
+     *
+     * @param tasks The task list.
+     * @param ui The user interface.
+     * @param storage The storage for saving tasks.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showDivider();

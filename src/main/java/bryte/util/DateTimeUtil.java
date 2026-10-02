@@ -23,6 +23,12 @@ public class DateTimeUtil {
     };
 
     /**
+     * Prevents instantiation of this utility class.
+     */
+    private DateTimeUtil() {
+    }
+
+    /**
      * Parses a date/time string into a LocalDateTime object.
      * If no time is provided, it defaults to 00:00.
      *

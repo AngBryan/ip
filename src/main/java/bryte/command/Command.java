@@ -10,6 +10,12 @@ import bryte.exception.BryteException;
  */
 public abstract class Command {
     /**
+     * Constructs a new {@code Command}.
+     */
+    public Command() {
+    }
+
+    /**
      * Executes the command.
      *
      * @param tasks   The task list.
