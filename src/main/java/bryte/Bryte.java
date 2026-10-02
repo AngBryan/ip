@@ -1,7 +1,5 @@
 package bryte;
 
-import java.util.ArrayList;
-
 import bryte.exception.BryteException;
 import bryte.task.Deadline;
 import bryte.task.Event;
@@ -19,7 +17,7 @@ public class Bryte {
     private static final String EVENT_START_DELIMITER = " /from ";
     private static final String EVENT_END_DELIMITER = " /to ";
 
-    private ArrayList<Task> taskList;
+    private TaskList tasks;
     private Ui ui;
     private Storage storage;
 
@@ -33,10 +31,10 @@ public class Bryte {
         ui = new Ui();
         storage = new Storage(dirPath, filePath);
         try {
-            taskList = storage.load();
+            tasks = new TaskList(storage.load());
         } catch (BryteException e) {
             ui.showError(e.getMessage());
-            taskList = new ArrayList<>();
+            tasks = new TaskList();
         }
     }
 
@@ -126,8 +124,8 @@ public class Bryte {
     private void handleListCommand() {
         ui.showDivider();
         ui.showMessage(" Here are the tasks in your list:");
-        for (int i = 0; i < taskList.size(); i++) {
-            ui.showMessage(" " + (i + 1) + "." + taskList.get(i).toString());
+        for (int i = 0; i < tasks.size(); i++) {
+            ui.showMessage(" " + (i + 1) + "." + tasks.get(i).toString());
         }
         ui.showDivider();
     }
@@ -216,20 +214,20 @@ public class Bryte {
         try {
             int index = Integer.parseInt(commandParts[1].trim()) - 1;
 
-            if (index < 0 || index >= taskList.size()) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new BryteException("Invalid task number.");
             }
 
-            Task removedTask = taskList.remove(index);
+            Task removedTask = tasks.remove(index);
             try {
-                storage.save(taskList);
+                storage.save(tasks.getTasks());
             } catch (BryteException e) {
                 ui.showError(e.getMessage());
             }
             ui.showDivider();
             ui.showMessage(" Noted. I've removed this task:");
             ui.showMessage("   " + removedTask.toString());
-            ui.showMessage(" Now you have " + taskList.size() + " tasks in the list.");
+            ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
             ui.showDivider();
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
@@ -250,7 +248,7 @@ public class Bryte {
         try {
             int index = Integer.parseInt(commandParts[1].trim()) - 1;
 
-            if (index < 0 || index >= taskList.size()) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new BryteException("Invalid task number.");
             }
 
@@ -259,13 +257,13 @@ public class Bryte {
             } else {
                 ui.showMessage(" OK, I've marked this task as not done yet:");
             }
-            taskList.get(index).setDone(markStatus);
+            tasks.get(index).setDone(markStatus);
             try {
-                storage.save(taskList);
+                storage.save(tasks.getTasks());
             } catch (BryteException e) {
                 ui.showError(e.getMessage());
             }
-            ui.showMessage("   " + taskList.get(index).toString());
+            ui.showMessage("   " + tasks.get(index).toString());
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
         }
@@ -277,16 +275,16 @@ public class Bryte {
      * @param task The task to be added.
      */
     private void addTask(Task task) {
-        taskList.add(task);
+        tasks.add(task);
         try {
-            storage.save(taskList);
+            storage.save(tasks.getTasks());
         } catch (BryteException e) {
             ui.showError(e.getMessage());
         }
         ui.showDivider();
         ui.showMessage(" Got it. I've added this task:");
         ui.showMessage("   " + task.toString());
-        ui.showMessage(" Now you have " + taskList.size() + " tasks in the list.");
+        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
         ui.showDivider();
     }
 }
