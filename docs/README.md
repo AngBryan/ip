@@ -4,7 +4,42 @@
 
 ---
 
+## Table of Contents
+
+* [Quick Start](#quick-start)
+* [Features](#features)
+  * [1. Adding a Todo: `todo`](#1-adding-a-todo-todo)
+  * [2. Adding a Deadline: `deadline`](#2-adding-a-deadline-deadline)
+  * [3. Adding an Event: `event`](#3-adding-an-event-event)
+  * [4. Listing all tasks: `list`](#4-listing-all-tasks-list)
+  * [5. Marking a task as done: `mark`](#5-marking-a-task-as-done-mark)
+  * [6. Marking a task as undone: `unmark`](#6-marking-a-task-as-undone-unmark)
+  * [7. Deleting a task: `delete`](#7-deleting-a-task-delete)
+  * [8. Finding tasks by keyword: `find`](#8-finding-tasks-by-keyword-find)
+  * [9. Finding tasks by date: `schedule`](#9-finding-tasks-by-date-schedule)
+  * [10. Exiting the program: `bye`](#10-exiting-the-program-bye)
+* [FAQ](#faq)
+* [Command Summary](#command-summary)
+
+---
+
+## Quick Start
+
+1. Open a terminal and navigate to the folder containing `bryte.jar`.
+2. Run the application using the command `java -jar bryte.jar`.
+3. Type the command in the command box and press Enter to execute it.
+
+---
+
 ## Features
+
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Notes about the command format:**<br>
+
+* Words in `<UPPER_CASE>` are the parameters to be supplied by the user.<br>
+  e.g. in `todo <DESCRIPTION>`, `DESCRIPTION` is a parameter which can be used as `todo read book`.
+</div>
 
 ### 1. Adding a Todo: `todo`
 
@@ -162,6 +197,27 @@ ____________________________________________________________
 
 ---
 
-## Data Storage
+## FAQ
 
-Bryte automatically saves your tasks to your hard drive every time the task list is modified. You do not need to save manually! The data is stored in a text file located at `data/bryte.txt`.
+**Q**: How is my data saved?<br>
+**A**: Bryte automatically saves your tasks to your hard drive every time the task list is modified. You do not need to save manually! The data is stored in a text file located at `data/bryte.txt`.
+
+**Q**: How do I transfer my data to another computer?<br>
+**A**: Install the app on the other computer and overwrite the empty data file it creates with your `data/bryte.txt` file.
+
+---
+
+## Command Summary
+
+| Action | Format, Examples |
+|--------|------------------|
+| **Todo** | `todo <description>` <br> e.g., `todo read book` |
+| **Deadline** | `deadline <description> /by <date/time>` <br> e.g., `deadline return book /by 2026-10-15` |
+| **Event** | `event <description> /from <start-time> /to <end-time>` <br> e.g., `event meeting /from 2026-10-02 1400 /to 2026-10-02 1600` |
+| **List** | `list` |
+| **Mark** | `mark <index>` <br> e.g., `mark 1` |
+| **Unmark** | `unmark <index>` <br> e.g., `unmark 1` |
+| **Delete** | `delete <index>` <br> e.g., `delete 3` |
+| **Find** | `find <keyword>` <br> e.g., `find book` |
+| **Schedule** | `schedule <date>` <br> e.g., `schedule 2026-10-15` |
+| **Exit** | `bye` |
