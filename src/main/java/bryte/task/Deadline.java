@@ -1,21 +1,27 @@
 package bryte.task;
 
+import java.time.LocalDateTime;
+
+import bryte.exception.BryteException;
+import bryte.util.DateTimeUtil;
+
 /**
  * Represents a task that needs to be done before a specific date/time.
  */
 public class Deadline extends Task {
 
-    protected String dueDate;
+    protected LocalDateTime dueDate;
 
     /**
      * Constructs a new {@code Deadline} task with the specified description and deadline.
      *
      * @param description The description or name of the task.
-     * @param dueDate The date/time the task needs to be done by.
+     * @param dueDateString The date/time the task needs to be done by.
+     * @throws BryteException If the due date string is not in a valid format.
      */
-    public Deadline(String description, String dueDate) {
+    public Deadline(String description, String dueDateString) throws BryteException {
         super(description, false);
-        this.dueDate = dueDate;
+        this.dueDate = DateTimeUtil.parse(dueDateString);
     }
 
     /**
@@ -25,7 +31,7 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + dueDate + ")";
+        return "[D]" + super.toString() + " (by: " + DateTimeUtil.formatForDisplay(dueDate) + ")";
     }
 
     /**
@@ -35,6 +41,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        return "D | " + super.toFileFormat() + " | " + dueDate;
+        return "D | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(dueDate);
     }
 }

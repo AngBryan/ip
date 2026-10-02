@@ -1,24 +1,30 @@
 package bryte.task;
 
+import java.time.LocalDateTime;
+
+import bryte.exception.BryteException;
+import bryte.util.DateTimeUtil;
+
 /**
  * Represents a task that starts at a specific date/time and ends at a specific date/time.
  */
 public class Event extends Task {
 
-    protected String startTime;
-    protected String endTime;
+    protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
 
     /**
      * Constructs a new {@code Event} task with the specified description, start time, and end time.
      *
      * @param description The description or name of the task.
-     * @param startTime The start time of the event.
-     * @param endTime The end time of the event.
+     * @param startTimeString The start time of the event.
+     * @param endTimeString The end time of the event.
+     * @throws BryteException If the start or end time strings are not in a valid format.
      */
-    public Event(String description, String startTime, String endTime) {
+    public Event(String description, String startTimeString, String endTimeString) throws BryteException {
         super(description, false);
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = DateTimeUtil.parse(startTimeString);
+        this.endTime = DateTimeUtil.parse(endTimeString);
     }
 
     /**
@@ -28,7 +34,8 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + startTime + " to: " + endTime + ")";
+        return "[E]" + super.toString() + " (from: " + DateTimeUtil.formatForDisplay(startTime)
+                + " to: " + DateTimeUtil.formatForDisplay(endTime) + ")";
     }
 
     /**
@@ -38,7 +45,7 @@ public class Event extends Task {
      */
     @Override
     public String toFileFormat() {
-        return "E | " + super.toFileFormat() + " | " + startTime + " | " + endTime;
+        return "E | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(startTime)
+                + " | " + DateTimeUtil.formatForStorage(endTime);
     }
 }
-
