@@ -4,6 +4,7 @@ import bryte.command.AddCommand;
 import bryte.command.Command;
 import bryte.command.DeleteCommand;
 import bryte.command.ExitCommand;
+import bryte.command.FindCommand;
 import bryte.command.ListCommand;
 import bryte.command.MarkCommand;
 import bryte.command.ScheduleCommand;
@@ -47,6 +48,8 @@ public class Parser {
                 return prepareEventCommand(commandParts);
             case "delete":
                 return prepareDeleteCommand(commandParts);
+            case "find":
+                return prepareFindCommand(commandParts);
             case "schedule":
                 return prepareScheduleCommand(commandParts);
             case "bye":
@@ -116,6 +119,13 @@ public class Parser {
         java.time.LocalDateTime startDt = DateTimeUtil.parse(timeParts[0].trim());
         java.time.LocalDateTime endDt = DateTimeUtil.parse(timeParts[1].trim());
         return new AddCommand(new Event(eventParts[0].trim(), startDt, endDt));
+    }
+
+    private static Command prepareFindCommand(String[] commandParts) throws BryteException {
+        if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
+            throw new BryteException("Please specify a keyword to search for (e.g., find book).");
+        }
+        return new FindCommand(commandParts[1].trim());
     }
 
     private static Command prepareScheduleCommand(String[] commandParts) throws BryteException {
