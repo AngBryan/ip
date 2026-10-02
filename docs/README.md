@@ -1,5 +1,17 @@
 # Bryte User Guide
 
+<div align="center">
+  <h2>Welcome to</h2>
+  <pre>
+██████╗ ██████╗ ██╗   ██╗████████╗███████╗
+██╔══██╗██╔══██╗╚██╗ ██╔╝╚══██╔══╝██╔════╝
+██████╔╝██████╔╝ ╚████╔╝    ██║   █████╗  
+██╔══██╗██╔══██╗  ╚██╔╝     ██║   ██╔══╝  
+██████╔╝██║  ██║   ██║      ██║   ███████╗
+╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝
+  </pre>
+</div>
+
 **Bryte** is a lightweight, command-line based task management application (chatbot) designed for users who prefer interacting through a Command Line Interface (CLI). It helps you manage your daily tasks, deadlines, and events efficiently.
 
 ---
