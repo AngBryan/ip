@@ -95,7 +95,8 @@ public class Parser {
         if (deadlineParts.length < 2) {
             throw new BryteException("Please use " + DEADLINE_DELIMITER.trim() + " to specify the deadline.");
         }
-        return new AddCommand(new Deadline(deadlineParts[0].trim(), deadlineParts[1].trim()));
+        java.time.LocalDateTime dt = DateTimeUtil.parse(deadlineParts[1].trim());
+        return new AddCommand(new Deadline(deadlineParts[0].trim(), dt));
     }
 
     private static Command prepareEventCommand(String[] commandParts) throws BryteException {
@@ -112,7 +113,9 @@ public class Parser {
             throw new BryteException("Please use " + EVENT_END_DELIMITER.trim()
                     + " to specify the end time of the event.");
         }
-        return new AddCommand(new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim()));
+        java.time.LocalDateTime startDt = DateTimeUtil.parse(timeParts[0].trim());
+        java.time.LocalDateTime endDt = DateTimeUtil.parse(timeParts[1].trim());
+        return new AddCommand(new Event(eventParts[0].trim(), startDt, endDt));
     }
 
     private static Command prepareScheduleCommand(String[] commandParts) throws BryteException {

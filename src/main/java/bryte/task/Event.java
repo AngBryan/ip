@@ -12,6 +12,8 @@ public class Event extends Task {
 
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;
+    protected String rawStartTime;
+    protected String rawEndTime;
 
     /**
      * Constructs a new {@code Event} task with the specified description, start time, and end time.
@@ -19,12 +21,34 @@ public class Event extends Task {
      * @param description The description or name of the task.
      * @param startTimeString The start time of the event.
      * @param endTimeString The end time of the event.
-     * @throws BryteException If the start or end time strings are not in a valid format.
      */
-    public Event(String description, String startTimeString, String endTimeString) throws BryteException {
+    public Event(String description, String startTimeString, String endTimeString) {
         super(description, false);
-        this.startTime = DateTimeUtil.parse(startTimeString);
-        this.endTime = DateTimeUtil.parse(endTimeString);
+        this.rawStartTime = startTimeString.trim();
+        this.rawEndTime = endTimeString.trim();
+        try {
+            this.startTime = DateTimeUtil.parse(startTimeString);
+            this.endTime = DateTimeUtil.parse(endTimeString);
+        } catch (BryteException e) {
+            this.startTime = null;
+            this.endTime = null;
+        }
+    }
+
+    /**
+     * Constructs a new {@code Event} task with parsed LocalDateTimes.
+     * Used for new tasks where date format is strictly enforced.
+     *
+     * @param description The description or name of the task.
+     * @param startTime The parsed start time.
+     * @param endTime The parsed end time.
+     */
+    public Event(String description, LocalDateTime startTime, LocalDateTime endTime) {
+        super(description, false);
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.rawStartTime = DateTimeUtil.formatForStorage(startTime);
+        this.rawEndTime = DateTimeUtil.formatForStorage(endTime);
     }
 
     /**
@@ -34,8 +58,11 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + DateTimeUtil.formatForDisplay(startTime)
-                + " to: " + DateTimeUtil.formatForDisplay(endTime) + ")";
+        if (startTime != null && endTime != null) {
+            return "[E]" + super.toString() + " (from: " + DateTimeUtil.formatForDisplay(startTime)
+                    + " to: " + DateTimeUtil.formatForDisplay(endTime) + ")";
+        }
+        return "[E]" + super.toString() + " (from: " + rawStartTime + " to: " + rawEndTime + ")";
     }
 
     /**
@@ -45,8 +72,11 @@ public class Event extends Task {
      */
     @Override
     public String toFileFormat() {
-        return "E | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(startTime)
-                + " | " + DateTimeUtil.formatForStorage(endTime);
+        if (startTime != null && endTime != null) {
+            return "E | " + super.toFileFormat() + " | " + DateTimeUtil.formatForStorage(startTime)
+                    + " | " + DateTimeUtil.formatForStorage(endTime);
+        }
+        return "E | " + super.toFileFormat() + " | " + rawStartTime + " | " + rawEndTime;
     }
 
     /**
@@ -58,6 +88,9 @@ public class Event extends Task {
      */
     @Override
     public boolean isOnDate(java.time.LocalDate date) {
-        return startTime.toLocalDate().isEqual(date) || endTime.toLocalDate().isEqual(date);
+        if (startTime != null && endTime != null) {
+            return startTime.toLocalDate().isEqual(date) || endTime.toLocalDate().isEqual(date);
+        }
+        return false;
     }
 }
