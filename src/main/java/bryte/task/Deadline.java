@@ -10,7 +10,9 @@ import bryte.util.DateTimeUtil;
  */
 public class Deadline extends Task {
 
+    /** The parsed date and time the task is due, or null if unparseable. */
     protected LocalDateTime dueDate;
+    /** The raw due date string provided by the user or file. */
     protected String rawDueDate;
 
     /**

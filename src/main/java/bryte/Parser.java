@@ -23,6 +23,12 @@ public class Parser {
     private static final String EVENT_END_DELIMITER = " /to ";
 
     /**
+     * Prevents instantiation of this utility class.
+     */
+    private Parser() {
+    }
+
+    /**
      * Parses the full user command and returns the corresponding Command object.
      *
      * @param fullCommand The full user input string.
@@ -59,6 +65,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the arguments for a mark or unmark command.
+     *
+     * @param commandParts The array containing the command keyword and arguments.
+     * @param isDone True to mark the task as done, false to unmark.
+     * @return A MarkCommand initialized with the specified task index and status.
+     * @throws BryteException If the index is missing or cannot be parsed as an integer.
+     */
     private static Command prepareMarkCommand(String[] commandParts, boolean isDone) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("Please specify a task number.");
@@ -71,6 +85,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the arguments for a delete command.
+     *
+     * @param commandParts The array containing the command keyword and arguments.
+     * @return A DeleteCommand initialized with the specified task index.
+     * @throws BryteException If the index is missing or cannot be parsed as an integer.
+     */
     private static Command prepareDeleteCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("Please specify a task number to delete.");
@@ -83,6 +104,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the arguments for a todo command.
+     *
+     * @param commandParts The array containing the command keyword and description.
+     * @return An AddCommand containing the new Todo task.
+     * @throws BryteException If the description is empty.
+     */
     private static Command prepareTodoCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a todo cannot be empty.");
@@ -90,6 +118,13 @@ public class Parser {
         return new AddCommand(new Todo(commandParts[1].trim()));
     }
 
+    /**
+     * Parses the arguments for a deadline command.
+     *
+     * @param commandParts The array containing the command keyword and arguments.
+     * @return An AddCommand containing the new Deadline task.
+     * @throws BryteException If the description or deadline date is missing or invalid.
+     */
     private static Command prepareDeadlineCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of a deadline cannot be empty.");
@@ -102,6 +137,13 @@ public class Parser {
         return new AddCommand(new Deadline(deadlineParts[0].trim(), dt));
     }
 
+    /**
+     * Parses the arguments for an event command.
+     *
+     * @param commandParts The array containing the command keyword and arguments.
+     * @return An AddCommand containing the new Event task.
+     * @throws BryteException If the description, start time, or end time is missing or invalid.
+     */
     private static Command prepareEventCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("The description of an event cannot be empty.");
@@ -121,6 +163,13 @@ public class Parser {
         return new AddCommand(new Event(eventParts[0].trim(), startDt, endDt));
     }
 
+    /**
+     * Parses the arguments for a find command.
+     *
+     * @param commandParts The array containing the command keyword and search keyword.
+     * @return A FindCommand initialized with the search keyword.
+     * @throws BryteException If the search keyword is empty.
+     */
     private static Command prepareFindCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("Please specify a keyword to search for (e.g., find book).");
@@ -128,6 +177,13 @@ public class Parser {
         return new FindCommand(commandParts[1].trim());
     }
 
+    /**
+     * Parses the arguments for a schedule command.
+     *
+     * @param commandParts The array containing the command keyword and date.
+     * @return A ScheduleCommand initialized with the target date.
+     * @throws BryteException If the date argument is missing or cannot be parsed.
+     */
     private static Command prepareScheduleCommand(String[] commandParts) throws BryteException {
         if (commandParts.length < 2 || commandParts[1].trim().isEmpty()) {
             throw new BryteException("Please specify a date to check the schedule (e.g., schedule 2019-10-15).");

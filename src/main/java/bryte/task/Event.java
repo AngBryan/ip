@@ -10,9 +10,13 @@ import bryte.util.DateTimeUtil;
  */
 public class Event extends Task {
 
+    /** The parsed start date and time of the event, or null if unparseable. */
     protected LocalDateTime startTime;
+    /** The parsed end date and time of the event, or null if unparseable. */
     protected LocalDateTime endTime;
+    /** The raw start time string provided by the user or file. */
     protected String rawStartTime;
+    /** The raw end time string provided by the user or file. */
     protected String rawEndTime;
 
     /**

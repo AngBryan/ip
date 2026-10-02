@@ -16,6 +16,9 @@ public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
     private Scanner scanner;
 
+    /**
+     * Constructs a new {@code Ui} object and initializes the scanner for user input.
+     */
     public Ui() {
         this.scanner = new Scanner(System.in);
     }

@@ -21,6 +21,14 @@ public class AddCommand extends Command {
         this.task = task;
     }
 
+    /**
+     * Executes the command by adding the task to the list and saving to storage.
+     *
+     * @param tasks The task list.
+     * @param ui The user interface.
+     * @param storage The storage for saving tasks.
+     * @throws BryteException If an error occurs when saving to storage.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BryteException {
         tasks.add(task);

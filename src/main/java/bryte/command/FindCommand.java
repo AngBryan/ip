@@ -20,6 +20,13 @@ public class FindCommand extends Command {
         this.keyword = keyword.toLowerCase();
     }
 
+    /**
+     * Executes the find command by searching for tasks that contain the keyword.
+     *
+     * @param tasks The task list.
+     * @param ui The user interface.
+     * @param storage The storage for saving tasks.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showDivider();
