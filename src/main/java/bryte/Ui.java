@@ -42,7 +42,10 @@ public class Ui {
      * @return The user's command as a string.
      */
     public String readCommand() {
-        return scanner.nextLine().trim();
+        if (scanner.hasNextLine()) {
+            return scanner.nextLine().trim();
+        }
+        return "bye";
     }
 
     /**
