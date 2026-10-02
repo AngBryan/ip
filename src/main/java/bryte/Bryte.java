@@ -1,11 +1,6 @@
 package bryte;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import bryte.exception.BryteException;
 import bryte.task.Deadline;
@@ -26,13 +21,23 @@ public class Bryte {
 
     private ArrayList<Task> taskList;
     private Ui ui;
+    private Storage storage;
 
     /**
      * Constructs a new Bryte instance.
+     *
+     * @param dirPath The directory path for data storage.
+     * @param filePath The file name for data storage.
      */
-    public Bryte() {
+    public Bryte(String dirPath, String filePath) {
         ui = new Ui();
-        taskList = new ArrayList<>();
+        storage = new Storage(dirPath, filePath);
+        try {
+            taskList = storage.load();
+        } catch (BryteException e) {
+            ui.showError(e.getMessage());
+            taskList = new ArrayList<>();
+        }
     }
 
     /**
@@ -41,7 +46,7 @@ public class Bryte {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
-        new Bryte().run();
+        new Bryte(DATA_DIR, FILE_NAME).run();
     }
 
     /**
@@ -51,7 +56,6 @@ public class Bryte {
         boolean isRunning = true;
 
         ui.showWelcome();
-        loadTasksFromFile();
 
         while (isRunning) {
             String command = ui.readCommand();
@@ -126,81 +130,6 @@ public class Bryte {
             ui.showMessage(" " + (i + 1) + "." + taskList.get(i).toString());
         }
         ui.showDivider();
-    }
-
-    /**
-     * Loads tasks from the hard disk.
-     */
-    private void loadTasksFromFile() {
-        File file = new File(DATA_DIR, FILE_NAME);
-        if (!file.exists()) {
-            return;
-        }
-
-        try {
-            Scanner fileScanner = new Scanner(file);
-            while (fileScanner.hasNext()) {
-                String line = fileScanner.nextLine();
-                String[] parts = line.split(" \\| ");
-                if (parts.length < 3) {
-                    continue;
-                }
-
-                String type = parts[0];
-                boolean isDone = parts[1].equals("1");
-                String description = parts[2];
-
-                Task task = null;
-                switch (type) {
-                    case "T":
-                        task = new Todo(description);
-                        break;
-                    case "D":
-                        if (parts.length >= 4) {
-                            task = new Deadline(description, parts[3]);
-                        }
-                        break;
-                    case "E":
-                        if (parts.length >= 5) {
-                            task = new Event(description, parts[3], parts[4]);
-                        }
-                        break;
-                    default:
-                        continue; // Unknown task type
-                }
-
-                if (task != null) {
-                    task.setDone(isDone);
-                    taskList.add(task);
-                }
-            }
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
-            ui.showMessage("Data file not found: " + e.getMessage());
-        } catch (Exception e) {
-            ui.showMessage("Data file is corrupted. Starting with an empty task list.");
-            taskList.clear();
-        }
-    }
-
-    /**
-     * Saves all tasks to the hard disk.
-     */
-    private void saveTasksToFile() {
-        try {
-            File dir = new File(DATA_DIR);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            File file = new File(DATA_DIR, FILE_NAME);
-            FileWriter fw = new FileWriter(file);
-            for (Task task : taskList) {
-                fw.write(task.toFileFormat() + System.lineSeparator());
-            }
-            fw.close();
-        } catch (IOException e) {
-            ui.showMessage("Error saving tasks to file: " + e.getMessage());
-        }
     }
 
     /**
@@ -292,7 +221,11 @@ public class Bryte {
             }
 
             Task removedTask = taskList.remove(index);
-            saveTasksToFile();
+            try {
+                storage.save(taskList);
+            } catch (BryteException e) {
+                ui.showError(e.getMessage());
+            }
             ui.showDivider();
             ui.showMessage(" Noted. I've removed this task:");
             ui.showMessage("   " + removedTask.toString());
@@ -327,7 +260,11 @@ public class Bryte {
                 ui.showMessage(" OK, I've marked this task as not done yet:");
             }
             taskList.get(index).setDone(markStatus);
-            saveTasksToFile();
+            try {
+                storage.save(taskList);
+            } catch (BryteException e) {
+                ui.showError(e.getMessage());
+            }
             ui.showMessage("   " + taskList.get(index).toString());
         } catch (NumberFormatException e) {
             throw new BryteException("Task number must be an integer.");
@@ -341,7 +278,11 @@ public class Bryte {
      */
     private void addTask(Task task) {
         taskList.add(task);
-        saveTasksToFile();
+        try {
+            storage.save(taskList);
+        } catch (BryteException e) {
+            ui.showError(e.getMessage());
+        }
         ui.showDivider();
         ui.showMessage(" Got it. I've added this task:");
         ui.showMessage("   " + task.toString());
